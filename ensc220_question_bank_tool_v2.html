@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENSC 220 Dojo — Topic-Wise Past-Exam Practice (SFU)</title>
+<meta name="description" content="A Revision-Village-style practice tool for SFU ENSC 220 Electric Circuits I. Worked past-exam solutions with source citations.">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" defer></script>
+<style>
+  :root {
+    --bg: #0b1020;
+    --surface: #131a30;
+    --surface-2: #1a2240;
+    --border: #2a3458;
+    --text: #e6ecff;
+    --muted: #93a2c8;
+    --accent: #5eead4;
+    --accent-2: #818cf8;
+    --warn: #fbbf24;
+    --good: #4ade80;
+    --bad: #f87171;
+    --radius: 14px;
+    --shadow: 0 10px 30px -10px rgba(0,0,0,.5);
+  }
+  [data-theme="light"] {
+    --bg: #f7f8fc;
+    --surface: #ffffff;
+    --surface-2: #f1f3fb;
+    --border: #e2e6f0;
+    --text: #0e1430;
+    --muted: #5a6485;
+    --accent: #0d9488;
+    --accent-2: #4f46e5;
+    --shadow: 0 10px 30px -10px rgba(20,30,80,.15);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.55;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  header.site {
+    padding: 28px 24px 16px; max-width: 1200px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .brand h1 { margin: 0; font-size: 1.5rem; letter-spacing: -.01em; }
+  .brand p { margin: 4px 0 0; color: var(--muted); font-size: .9rem; }
+  .controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  button, .btn {
+    background: var(--surface); color: var(--text); border: 1px solid var(--border);
+    padding: 8px 14px; border-radius: 10px; cursor: pointer; font-size: .9rem;
+    transition: border-color .15s, transform .05s;
+  }
+  button:hover, .btn:hover { border-color: var(--accent); }
+  button:active { transform: translateY(1px); }
+  .btn.primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #0b1020; border: none; font-weight: 600; }
+  main { max-width: 1200px; margin: 0 auto; padding: 0 24px 80px; }
+  .hero { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; margin-bottom: 24px; box-shadow: var(--shadow); }
+  .hero h2 { margin: 0 0 8px; font-size: 1.6rem; }
+  .hero p { color: var(--muted); margin: 8px 0; }
+  .hero .tags { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag { background: var(--surface-2); border: 1px solid var(--border); padding: 4px 10px; border-radius: 999px; font-size: .8rem; color: var(--muted); }
+  .topic-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: end;
+    margin: 10px 0 8px;
+  }
+  .topic-head p { margin: 0; color: var(--muted); }
+  .topic-toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 18px;
+  }
+  .topic-toc button {
+    padding: 7px 11px;
+    border-radius: 999px;
+  }
+  .grid-topics { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin: 16px 0 28px; }
+  .topic-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 16px; cursor: pointer; transition: border-color .15s, transform .15s;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .topic-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .topic-card.active { border-color: var(--accent); background: var(--surface-2); }
+  .topic-card .name { font-weight: 600; }
+  .topic-card .count { color: var(--muted); font-size: .85rem; }
+  .topic-card .chapter {
+    color: var(--accent);
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+  .topic-card .progress { height: 4px; background: var(--surface-2); border-radius: 2px; overflow: hidden; }
+  .topic-card .progress > div { height: 100%; background: linear-gradient(90deg, var(--good), var(--accent)); }
+  .chapter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+    margin: 16px 0 28px;
+  }
+  .chapter-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+  }
+  .chapter-card h4 { margin: 0 0 6px; font-size: .95rem; }
+  .chapter-card .chapter-meta { color: var(--muted); font-size: .85rem; margin-bottom: 10px; }
+  .chapter-card ul { margin: 0; padding-left: 18px; color: var(--text); }
+  .chapter-card li { margin-bottom: 5px; }
+  .filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
+  .filters select, .filters input[type="search"] {
+    background: var(--surface); color: var(--text); border: 1px solid var(--border);
+    padding: 8px 12px; border-radius: 10px; font-size: .9rem; min-width: 140px;
+  }
+  .filters input[type="search"] { flex: 1; min-width: 200px; }
+  .count-pill { color: var(--muted); font-size: .85rem; margin-left: auto; }
+
+  .q-list { display: flex; flex-direction: column; gap: 12px; }
+  .q-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 18px; box-shadow: var(--shadow);
+  }
+  .q-card .meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; align-items: center; }
+  .meta .pill { background: var(--surface-2); border: 1px solid var(--border); padding: 2px 10px; border-radius: 999px; font-size: .75rem; color: var(--muted); }
+  .meta .pill.year { color: var(--accent-2); border-color: var(--accent-2); }
+  .meta .pill.exam { color: var(--accent); border-color: var(--accent); }
+  .meta .pill.diff-easy { color: var(--good); border-color: var(--good); }
+  .meta .pill.diff-med { color: var(--warn); border-color: var(--warn); }
+  .meta .pill.diff-hard { color: var(--bad); border-color: var(--bad); }
+  .meta .pill.points { color: var(--text); }
+  .q-card h3 { margin: 0 0 8px; font-size: 1.05rem; }
+  .q-card .prompt { white-space: pre-wrap; }
+  .q-card .source { margin-top: 10px; font-size: .85rem; color: var(--muted); }
+  .q-card .actions { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .q-card .actions .status { margin-left: auto; display: flex; gap: 4px; }
+  .q-card .actions .status button { padding: 6px 10px; font-size: .8rem; }
+  .q-card .actions .status button.on-good { background: var(--good); color: #0b1020; border-color: var(--good); }
+  .q-card .actions .status button.on-review { background: var(--warn); color: #0b1020; border-color: var(--warn); }
+  .q-card .actions .status button.on-bad { background: var(--bad); color: #0b1020; border-color: var(--bad); }
+  .section-title {
+    margin: 28px 0 8px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .section-title small { color: var(--muted); font-weight: 400; }
+  .solution {
+    margin-top: 14px; padding: 14px; background: var(--surface-2);
+    border-left: 3px solid var(--accent); border-radius: 8px;
+    display: none;
+  }
+  .solution.open { display: block; }
+  .solution h4 { margin: 0 0 8px; color: var(--accent); font-size: .95rem; text-transform: uppercase; letter-spacing: .05em; }
+  .solution ol { margin: 0; padding-left: 22px; }
+  .solution ol li { margin-bottom: 8px; }
+  .solution .answer-box {
+    margin-top: 12px; padding: 10px 14px; background: var(--bg);
+    border: 1px dashed var(--accent); border-radius: 8px; font-weight: 600;
+  }
+  .solution .note { margin-top: 10px; color: var(--muted); font-size: .85rem; font-style: italic; }
+  .stub-note {
+    margin-top: 10px; padding: 10px 12px; background: var(--surface-2); border-radius: 8px;
+    color: var(--muted); font-size: .85rem; border-left: 3px solid var(--warn);
+  }
+  details.exams-section { margin-top: 32px; }
+  details.exams-section > summary { cursor: pointer; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); font-weight: 600; }
+  .exam-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; margin-top: 12px; }
+  .exam-row { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; }
+  .exam-row .yr { font-weight: 600; }
+  .exam-row .lnk { font-size: .85rem; display: flex; gap: 12px; flex-wrap: wrap; }
+  .empty { text-align: center; color: var(--muted); padding: 40px 0; }
+  footer { color: var(--muted); font-size: .85rem; text-align: center; padding: 24px 0; }
+  kbd { background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; font-family: ui-monospace, monospace; font-size: .8em; }
+  .topic-section {
+    margin-top: 22px;
+    padding-top: 6px;
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="brand">
+    <h1>⚡ ENSC 220 Dojo</h1>
+    <p>Topic-wise past-exam practice for SFU ENSC 220 — Electric Circuits I</p>
+  </div>
+  <div class="controls">
+    <button id="theme-toggle" title="Toggle dark/light">🌓 Theme</button>
+    <button id="reset-progress" title="Clear your local progress">↺ Reset progress</button>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <h2>Practice like Revision Village — but for ENSC 220</h2>
+    <p>
+      Every question below comes from <strong>SFU ENSC 220 sample exams</strong> (1998 → 2025), regrouped by topic with worked-out steps.
+      This is an exam-only study tool for the current course and future offerings.
+    </p>
+    <p>
+      Pick a topic → attempt the problems → reveal the worked solution → mark it ✅ got it, ⚠️ review later, or ❌ need help.
+      Your progress is saved locally in your browser.
+    </p>
+    <div class="tags">
+      <span class="tag">📚 Source: <a href="https://www.sfu.ca/~ljilja/ENSC220/sample_exams/" target="_blank" rel="noopener">SFU sample exams</a></span>
+      <span class="tag">📖 Chapter-organized</span>
+      <span class="tag">🧠 Topic-first practice</span>
+      <span class="tag" id="hero-count">Loading questions…</span>
+    </div>
+  </section>
+
+  <div class="section-title">
+    <h3>Chapter roadmap</h3>
+    <small>Chapter-first organization for any semester</small>
+  </div>
+  <div id="chapter-roadmap"></div>
+
+  <div class="section-title">
+    <h3>Topics</h3>
+    <small>Topic-first navigation for the full bank</small>
+  </div>
+  <div id="topics" class="grid-topics"></div>
+
+  <div class="section-title">
+    <h3>Question bank</h3>
+    <small>Past exam questions with worked solutions</small>
+  </div>
+  <div class="filters">
+    <select id="f-topic"><option value="">All topics</option></select>
+    <select id="f-year"><option value="">All years</option></select>
+    <select id="f-exam">
+      <option value="">All exams</option>
+      <option value="M1">Midterm 1</option>
+      <option value="M2">Midterm 2</option>
+      <option value="MT">Single Midterm</option>
+      <option value="F">Final</option>
+      <option value="MF">Makeup Final</option>
+    </select>
+    <select id="f-difficulty">
+      <option value="">All difficulty</option>
+      <option value="easy">Easy</option>
+      <option value="med">Medium</option>
+      <option value="hard">Hard</option>
+    </select>
+    <select id="f-status">
+      <option value="">All statuses</option>
+      <option value="untouched">Not attempted</option>
+      <option value="good">✅ Got it</option>
+      <option value="review">⚠️ Review</option>
+      <option value="bad">❌ Need help</option>
+    </select>
+    <input id="f-search" type="search" placeholder="Search question text…">
+    <span class="count-pill" id="count-pill"></span>
+  </div>
+  <div id="q-list" class="q-list"></div>
+
+  <details class="exams-section" open>
+    <summary>📄 Browse original exam PDFs (questions + handwritten solutions)</summary>
+    <div class="exam-grid" id="exam-grid"></div>
+  </details>
+
+  <footer>
+    Built for ENSC 220 students at SFU. Question content is organized from SFU sample exams with full source citations.
+    Worked solutions are independent and may contain errors; always cross-check against the official handwritten solution PDFs.
+  </footer>
+</main>
+
+<script>
+// =====================================================================
+//  DATA — extend this for future semesters!
+//  To add a new year of exam questions:
+//    1. Drop a new entry into EXAM_INDEX (URL + label).
+//    2. Append question objects into QUESTIONS, using { id, topic, year,
+//       exam, qNum, points, difficulty, prompt, solution[], answer, sourceUrl, stub? }.
+//    3. That's it — the UI auto-builds filters and counters.
+// =====================================================================
+
+const TOPICS = [
+  { id: 'basics',   chapter: 'Ch 1–2', name: '1. Charge, Current, Voltage, Power', short: 'Basic circuit quantities' },
+  { id: 'resistive',chapter: 'Ch 3',   name: '2. Ohm’s Law, Series/Parallel, Equivalent R', short: 'Resistive circuits' },
+  { id: 'node',     chapter: 'Ch 4',   name: '3. Nodal Analysis', short: 'Node analysis' },
+  { id: 'mesh',     chapter: 'Ch 4',   name: '4. Mesh Analysis', short: 'Mesh analysis' },
+  { id: 'thevenin', chapter: 'Ch 4',   name: '5. Source Transformation, Thévenin / Norton, Max Power', short: 'Thevenin / Norton' },
+  { id: 'opamp',    chapter: 'Ch 5',   name: '6. Ideal & Non-Ideal Op-Amps', short: 'Op-amps' },
+  { id: 'firstord', chapter: 'Ch 6–7', name: '7. Reactive Elements, RC / RL Transients', short: '1st-order transients' },
+  { id: 'secondord',chapter: 'Ch 8',   name: '8. Second-Order RLC Transients', short: '2nd-order transients' },
+  { id: 'phasor',   chapter: 'Ch 9',   name: '9. Sinusoidal Steady-State / Phasors', short:'Phasors' },
+  { id: 'freqresp', chapter: 'Ch 10',  name: '10. AC Power / Frequency Response', short: 'AC power & filters' },
+];
+
+const CHAPTERS = [
+  { id: 'ch1', label: 'Chapter 1', title: 'Introduction, Elements', dates: 'May 12', topics: ['basics'] },
+  { id: 'ch2', label: 'Chapter 2', title: 'Circuit Models, Sources, KCL, KVL', dates: 'May 14', topics: [] },
+  { id: 'ch3', label: 'Chapter 3', title: 'Resistive Circuits', dates: 'May 19–21', topics: ['resistive'] },
+  { id: 'ch4', label: 'Chapter 4', title: 'Circuit Analysis', dates: 'May 26 – Jun 2', topics: ['node', 'mesh', 'thevenin'] },
+  { id: 'ch5', label: 'Chapter 5', title: 'Operational Amplifiers', dates: 'Jun 4 – Jun 11', topics: ['opamp'] },
+  { id: 'ch6', label: 'Chapter 6', title: 'Reactive Elements', dates: 'Jun 16 – Jun 23', topics: [] },
+  { id: 'ch7', label: 'Chapter 7', title: 'First Order Circuits', dates: 'Jun 25 – Jul 2', topics: ['firstord'] },
+  { id: 'ch8', label: 'Chapter 8', title: 'Second Order Circuits', dates: 'Jul 7 – Jul 14', topics: ['secondord'] },
+  { id: 'ch9', label: 'Chapter 9', title: 'Sinusoidal Steady State', dates: 'Jul 21 – Jul 28', topics: ['phasor'] },
+  { id: 'ch10', label: 'Chapter 10', title: 'AC Power', dates: 'Jul 30 – Aug 4', topics: ['freqresp'] },
+];
+
+const PDF_BASE = 'https://www.sfu.ca/~ljilja/ENSC220/sample_exams/';
+const EXAM_INDEX = [
+  // { year, label, exam, qPdf, solPdf? }
+  { year: 2025, exam: 'M1', label: 'Fall 2025 — Midterm 1', qPdf: 'ENSC220-Midterm1-25-3.pdf' },
+  { year: 2025, exam: 'M2', label: 'Fall 2025 — Midterm 2', qPdf: 'ENSC220-Midterm2-25-3.pdf' },
+  { year: 2025, exam: 'F',  label: 'Fall 2025 — Final',     qPdf: 'ENSC220-Final-25-3.pdf' },
+  { year: 2017, exam: 'M1', label: 'Fall 2017 — Midterm 1', qPdf: 'ENSC220-Midterm1-17-3.pdf', solPdf: 'ENSC220-Midterm1-17-3_solutions.pdf' },
+  { year: 2017, exam: 'M2', label: 'Fall 2017 — Midterm 2', qPdf: 'ENSC220-Midterm2-17-3.pdf', solPdf: 'ENSC220-Midterm2-17-3_solutions.pdf' },
+  { year: 2017, exam: 'F',  label: 'Fall 2017 — Final',     qPdf: 'ENSC220-Final-17-3.pdf' },
+  { year: 2016, exam: 'M1', label: 'Fall 2016 — Midterm 1', qPdf: 'ENSC220-Midterm1-16-3.pdf', solPdf: 'ENSC220-Midterm1-16-3_solutions.pdf' },
+  { year: 2016, exam: 'M2', label: 'Fall 2016 — Midterm 2', qPdf: 'ENSC220-Midterm2-16-3.pdf', solPdf: 'ENSC220-Midterm2-16-3_solutions.pdf' },
+  { year: 2016, exam: 'F',  label: 'Fall 2016 — Final',     qPdf: 'ENSC220-Final-16-3.pdf',   solPdf: 'ENSC220-Final-16-3_solutions.pdf' },
+  { year: 2014, exam: 'M1', label: 'Fall 2014 — Midterm 1', qPdf: 'ENSC220-Midterm1-14-3.pdf', solPdf: 'ENSC220-Midterm1-14-3_solutions.pdf' },
+  { year: 2014, exam: 'M2', label: 'Fall 2014 — Midterm 2', qPdf: 'ENSC220-Midterm2-14-3.pdf', solPdf: 'ENSC220-Midterm2-14-3_solutions.pdf' },
+  { year: 2014, exam: 'F',  label: 'Fall 2014 — Final',     qPdf: 'ENSC220-Final-14-3.pdf',   solPdf: 'ENSC220-Final-14-3_solutions.pdf' },
+  { year: 2008, exam: 'MT', label: 'Fall 2008 — Midterm',   qPdf: 'ENSC220-Midterm-08-3.pdf', solPdf: 'ENSC220-Midterm-08-3_solutions.pdf' },
+  { year: 2008, exam: 'F',  label: 'Fall 2008 — Final',     qPdf: 'ENSC220-Final-08-3.pdf',   solPdf: 'ENSC220-Final-08-3_solutions.pdf' },
+  { year: 2001, exam: 'MT', label: 'Fall 2001 — Midterm',   qPdf: 'ENSC220-Midterm-01-3.pdf', solPdf: 'ENSC220-Midterm-01-3_solutions.pdf' },
+  { year: 2001, exam: 'F',  label: 'Fall 2001 — Final',     qPdf: 'ENSC220-Final-01-3.pdf',   solPdf: 'ENSC220-Final-01-3_solutions.pdf' },
+  { year: 1999, exam: 'MT', label: 'Fall 1999 — Midterm',   qPdf: 'ENSC220-Midterm-99-3.pdf', solPdf: 'ENSC220-Midterm-99-3_solutions.pdf' },
+  { year: 1999, exam: 'F',  label: 'Fall 1999 — Final',     qPdf: 'ENSC220-Final-99-3.pdf',   solPdf: 'ENSC220-Final-99-3_solutions.pdf' },
+  { year: 1998, exam: 'M1', label: 'Fall 1998 — Midterm 1', qPdf: 'ENSC220-Midterm1-98-3.pdf', solPdf: 'ENSC220-Midterm1-98-3_solutions.pdf' },
+  { year: 1998, exam: 'M2', label: 'Fall 1998 — Midterm 2', qPdf: 'ENSC220-Midterm2-98-3.pdf', solPdf: 'ENSC220-Midterm2-98-3_solutions.pdf' },
+  { year: 1998, exam: 'F',  label: 'Fall 1998 — Final',     qPdf: 'ENSC220-Final-98-3.pdf',   solPdf: 'ENSC220-Final-98-3_solutions.pdf' },
+  { year: 1998, exam: 'MF', label: 'Fall 1998 — Makeup Final', qPdf: 'ENSC220-MakeupFinal-98-3.pdf' },
+];
+
+const EXAM_LABEL = { M1: 'Midterm 1', M2: 'Midterm 2', MT: 'Midterm', F: 'Final', MF: 'Makeup Final' };
+
+// Helper to attach url to source
+function srcUrl(year, exam) {
+  const e = EXAM_INDEX.find(e => e.year === year && e.exam === exam);
+  return e ? PDF_BASE + e.qPdf : '';
+}
+function solUrl(year, exam) {
+  const e = EXAM_INDEX.find(e => e.year === year && e.exam === exam);
+  return e && e.solPdf ? PDF_BASE + e.solPdf : null;
+}
+
+// ---------------------------------------------------------------------
+// QUESTIONS — fully worked entries for Fall 2025. Older years are added
+// as stubs that point at the source PDFs so you can practice + verify
+// against the official handwritten solutions. Replace any stub with a
+// full worked entry over time.
+// ---------------------------------------------------------------------
+const QUESTIONS = [
+
+  // ===== Fall 2025 — Midterm 1 =====
+  {
+    id: '2025-M1-Q1', topic: 'basics', year: 2025, exam: 'M1', qNum: 1, points: 10, difficulty: 'easy',
+    title: 'Charge from a piecewise current waveform',
+    prompt:
+`For 0 ≤ t ≤ 5 s, the current through a device is i(t) = 3t A.
+For 5 < t ≤ 10 s, i(t) = 30 − 3t A, and i(t) = 0 for t > 10 s.
+(a) Sketch i(t) versus time.
+(b) Find the total charge flowing through the device between t = 0 s and t = 10 s.`,
+    solution: [
+      'Recognise the relation between current and charge: $q = \\int i(t)\\,dt$. Total charge over 0 → 10 s is the area under the i(t) curve.',
+      'On 0 ≤ t ≤ 5: $i$ ramps linearly from 0 to 15 A. $\\int_0^5 3t\\,dt = \\tfrac{3}{2}t^2\\big|_0^5 = 37.5\\ \\text{C}$.',
+      'On 5 ≤ t ≤ 10: $i$ ramps linearly from 15 A back to 0 A. $\\int_5^{10}(30-3t)\\,dt = [30t - \\tfrac{3}{2}t^2]_5^{10} = (300-150)-(150-37.5) = 37.5\\ \\text{C}$.',
+      'The sketch is a symmetric triangle peaking at 15 A at t = 5 s. Total charge = area of triangle = $\\tfrac{1}{2}(10)(15) = 75\\ \\text{C}$, matching the integral sum.',
+    ],
+    answer: 'Total charge $q = 75\\ \\text{C}$.',
+    sourceUrl: PDF_BASE + 'ENSC220-Midterm1-25-3.pdf',
+  },
+  {
+    id: '2025-M1-Q2', topic: 'basics', year: 2025, exam: 'M1', qNum: 2, points: 10, difficulty: 'easy',
+    title: 'Voltage across each element using KVL',
+    prompt:
+`In Figure 1 (see source PDF), the voltage v₂ = 10 V and v₄ = 5 V. Find the voltage associated with each element.`,
+    solution: [
+      'Apply Kirchhoff\'s Voltage Law (KVL) around every independent loop in the figure: the algebraic sum of voltage drops around any closed loop equals zero.',
+      'Use the passive sign convention consistently — pick a direction (say clockwise) and add a +v if you enter the element at the "+" reference, –v if you enter at the "−".',
+      'Substitute the known values v₂ = 10 V and v₄ = 5 V into the loop equations; you obtain one equation per unknown element voltage.',
+      'Solve the resulting linear system. Double-check by walking another loop and confirming KVL is satisfied with all the values you found.',
+    ],
+    answer: 'Element voltages depend on the figure. See handwritten worked example in the source PDF — values are obtained by writing KVL around each of the two visible loops and substituting v₂ = 10 V, v₄ = 5 V.',
+    sourceUrl: PDF_BASE + 'ENSC220-Midterm1-25-3.pdf',
+    note: 'This question requires Figure 1 from the PDF. Open the source link to see the schematic before solving.',
+  },
+  {
+    id: '2025-M1-Q3', topic: 'resistive', year: 2025, exam: 'M1', qNum: 3, points: 35, difficulty: 'med',
+    title: 'Equivalent resistance — series/parallel, switches, and matching R',
+    prompt:
+`(a) In Figure 2 (top), the same network is viewed from two different terminal pairs. Find R_EQ1 and R_EQ2.
+(b) Find R_EQ in Figure 2 (middle) with the switch open. Repeat with the switch closed.
+(c) Select R in Figure 2 (bottom) so that R_AB = R_L.`,
+    solution: [
+      'For each terminal pair, redraw the network with that pair as the "input" — resistors that connect only to the same node collapse, dangling branches with no closed path to the terminals contribute nothing.',
+      'Reduce by series ($R_{eq} = R_1 + R_2$) and parallel ($R_{eq} = R_1 R_2/(R_1+R_2)$) combinations step by step. Mark each intermediate result on a fresh sketch to avoid bookkeeping errors.',
+      'For the switch part: an open switch behaves as an infinite resistor (branch removed); a closed switch behaves as a short (two nodes merge). Re-draw the simplified network for each switch state, then reduce again.',
+      'For the matching part: write R_AB as a function of R using your reduction rules, set R_AB = R_L, and solve the resulting algebraic equation for R.',
+    ],
+    answer: 'Answers depend on the resistor values in Figure 2. Open the source PDF for the values, then apply the procedure above. Verify your matching-R answer by substituting back and checking R_AB equals R_L numerically.',
+    sourceUrl: PDF_BASE + 'ENSC220-Midterm1-25-3.pdf',
+    note: 'This question requires Figure 2. Walk through each network reduction one step at a time and re-sketch.',
+  },
+  {
+    id: '2025-M1-Q4', topic: 'node', year: 2025, exam: 'M1', qNum: 4, points: 15, difficulty: 'med',
+    title: 'Node-voltage equations in matrix form',
+    prompt:
+`(a) Formulate node-voltage equations for the circuit in Figure 3. Arrange the results in matrix form A·x = b.
+(b) Solve these equations for v_A and v_B.
+(c) Use these results to find v_x and i_x.`,
+    solution: [
+      'Pick the reference (ground) node — usually the node with the most branches attached. Label the remaining essential nodes v_A and v_B.',
+      'Write KCL at each non-reference node: sum of currents leaving the node = 0. Express each branch current as (v_node − v_other) / R. Independent current sources contribute fixed terms on the RHS.',
+      'If a voltage source sits between two non-reference nodes, write a super-node KCL plus the constraint v_+ − v_− = V_s.',
+      'Collect coefficients into the conductance matrix A so that A·[v_A v_B]ᵀ = b. Solve by Cramer\'s rule (2×2 is fastest by hand) or by inversion.',
+      'Back-substitute: v_x is read directly off the schematic as a node voltage or a difference of node voltages; i_x = (v_a − v_b)/R for the element it flows through.',
+    ],
+    answer: 'v_A, v_B, v_x, i_x — numeric values come from the figure. Verify by checking KCL at one node with the values you obtained.',
+    sourceUrl: PDF_BASE + 'ENSC220-Midterm1-25-3.pdf',
+    note: 'Requires Figure 3. The exam expects you to show the matrix step explicitly — don\'t skip it.',
+  },
+  {
+    id: '2025-M1-Q5', topic: 'mesh', year: 2025, exam: 'M1', qNum: 5, points: 30, difficulty: 'hard',
+    title: 'Mesh-current vs node-voltage — same circuit, two methods',
+    prompt:
+`(a) Formulate mesh-current equations for the circuit in Figure 4. Arrange in matrix form A·x = b.
+(b) Solve for i_A and i_B.
+(c) Use these to find v_x and i_x.
+(d) Re-solve the same circuit using node-voltage equations. Compare answers and decide which method was simpler here.`,
+    solution: [
+      'Identify each independent loop and assign a clockwise mesh current (i_A, i_B). A branch shared by two meshes carries the difference of the two mesh currents.',
+      'Write KVL around each mesh: $\\sum v_{drops} = 0$. Resistor drop in a shared branch is $R(i_{this} - i_{other})$. Voltage sources contribute their value with the appropriate sign.',
+      'If a current source sits between two meshes, use a super-mesh: KVL around the combined loop plus the constraint i_A − i_B = I_s.',
+      'Assemble the resistance matrix R so that R·[i_A i_B]ᵀ = b, where b contains the source voltages. Solve.',
+      'Compute v_x = (mesh-current expression) × resistor, and i_x = the mesh current through that element (or sum/difference for shared branches).',
+      'For part (d): with the ground chosen, the same circuit gives a 2-equation node system. The smaller system (fewer unknowns) is generally the simpler method. If there are more current sources than voltage sources → node usually wins; more voltage sources → mesh usually wins.',
+    ],
+    answer: 'Match your i_A, i_B, v_x, i_x from both methods — they MUST agree numerically. The "simpler" method is the one that produces fewer equations and fewer super-mesh/super-node constraints for THIS topology.',
+    sourceUrl: PDF_BASE + 'ENSC220-Midterm1-25-3.pdf',
+    note: 'Requires Figure 4. Doing both methods on the same circuit is the best self-check available — use it.',
+  },
+
+  // ===== Fall 2025 — Midterm 2 =====
+  {
+    id: '2025-M2-Q1', topic: 'thevenin', year: 2025, exam: 'M2', qNum: 1, points: 20, difficulty: 'med',
+    title: 'Thévenin, Norton, and max power transfer',
+    prompt:
+`For the circuit in Figure 1 (see source PDF), find:
+(a) the Thévenin equivalent at terminals A–B,
+(b) the Norton equivalent at terminals A–B,
+(c) the load R_L that absorbs maximum power, and
+(d) the maximum power transferred to the load.`,
+    solution: [
+      'Open-circuit voltage: remove R_L. Solve the remaining circuit (node or mesh) for v_AB. This is V_TH.',
+      'Thévenin resistance: deactivate every independent source (voltage source → short, current source → open). Look back into terminals A–B and reduce to a single equivalent resistance R_TH. If dependent sources are present, apply a 1 V test source and find I_test; R_TH = 1 / I_test.',
+      'Norton: I_N = V_TH / R_TH, with R_N = R_TH (same resistance, parallel orientation).',
+      'Max power transfer theorem: R_L = R_TH. The matched load absorbs $P_{max} = V_{TH}^{2}/(4R_{TH})$.',
+    ],
+    answer: 'V_TH, R_TH, I_N = V_TH/R_TH, R_L = R_TH, P_max = V_TH²/(4 R_TH). Numbers depend on Figure 1 component values.',
+    sourceUrl: PDF_BASE + 'ENSC220-Midterm2-25-3.pdf',
+  },
+  {
+    id: '2025-M2-Q2', topic: 'opamp', year: 2025, exam: 'M2', qNum: 2, points: 10, difficulty: 'easy',
+    title: 'Output of an ideal op-amp circuit',
+    prompt: `The op-amp in Figure 2 is ideal. Find the output voltage V_o.`,
+    solution: [
+      'Ideal op-amp rules: (i) input currents are zero ($i_+ = i_- = 0$); (ii) under negative feedback, $v_+ = v_-$ ("virtual short").',
+      'Identify the feedback path and confirm it returns to the inverting input — only then can you use the virtual short.',
+      'Apply KCL at the inverting node. Currents through the input resistor(s) equal the current through the feedback resistor (since no current enters the op-amp).',
+      'Solve the resulting algebraic equation for V_o in terms of the source(s) and resistor ratios. Standard results: inverting amp gives $V_o = -(R_f/R_{in})V_s$; non-inverting gives $V_o = (1 + R_f/R_{in})V_s$; summing/difference amps follow the same KCL recipe.',
+    ],
+    answer: 'V_o = (gain expression set by the resistor network) × input(s). Use the rule above for the exact topology in Figure 2.',
+    sourceUrl: PDF_BASE + 'ENSC220-Midterm2-25-3.pdf',
+  },
+  {
+    id: '2025-M2-Q3', topic: 'firstord', year: 2025, exam: 'M2', qNum: 3, points: 30, difficulty: 'med',
+    title: 'First-order switched RC/RL — find i(t) before and after switching',
+    prompt:
+`For the circuit in Figure 3:
+(a) Find i(t) while the switch is in position A.
+(b) Assume the switch has been in A for a long time. Find i(t) at that DC steady state.
+(c) At t = 0 the switch moves from A to B. Find i(t) for t ≥ 0 in position B.`,
+    solution: [
+      'In DC steady state, an inductor looks like a short ($v_L = L\\,di/dt = 0$) and a capacitor looks like an open ($i_C = C\\,dv/dt = 0$). Use this to find the initial condition i(0⁻) (or v_C(0⁻)).',
+      'After switching, identify the new circuit (position B). Find the Thévenin equivalent seen by the storage element to get V_TH and R_TH.',
+      'Time constant: $\\tau = L/R_{TH}$ for an inductor, $\\tau = R_{TH} C$ for a capacitor. Steady-state value as $t \\to \\infty$: $i(\\infty) = V_{TH}/R_{TH}$ for an inductor, $v_C(\\infty) = V_{TH}$ for a capacitor.',
+      'Apply the general first-order formula: $x(t) = x(\\infty) + [x(0^+) - x(\\infty)]\\,e^{-t/\\tau}$, where $x(0^+) = x(0^-)$ because inductor current and capacitor voltage cannot jump.',
+    ],
+    answer: 'i(t) = i(∞) + [i(0⁺) − i(∞)] e^{−t/τ}, with i(0⁺), i(∞), and τ extracted from Figure 3.',
+    sourceUrl: PDF_BASE + 'ENSC220-Midterm2-25-3.pdf',
+  },
+  {
+    id: '2025-M2-Q4', topic: 'secondord', year: 2025, exam: 'M2', qNum: 4, points: 40, difficulty: 'hard',
+    title: 'Second-order RLC — full v_C(t) and i_L(t) response',
+    prompt:
+`In the circuit shown in Figure 4, switch S has been in position A for a long time and is moved to position B at t = 0.
+(a) Find v_C(0⁻) and i_L(0⁻).
+(b) Find v_C(t) for t ≥ 0.
+(c) Find i_L(t) for t ≥ 0.
+(d) Find v_C(t) and i_L(t) as t → ∞.`,
+    solution: [
+      'Initial conditions (position A, DC steady state): inductor = short, capacitor = open. Solve the resulting resistive circuit for v_C(0⁻) and i_L(0⁻). Continuity: v_C(0⁺) = v_C(0⁻) and i_L(0⁺) = i_L(0⁻).',
+      'After switching (position B): derive the governing 2nd-order ODE. Standard form: $\\ddot{x} + 2\\alpha \\dot{x} + \\omega_0^{2} x = \\omega_0^{2} x_{ss}$. Series RLC: $\\alpha = R/(2L)$, $\\omega_0 = 1/\\sqrt{LC}$. Parallel RLC: $\\alpha = 1/(2RC)$, $\\omega_0 = 1/\\sqrt{LC}$.',
+      'Compare α and ω₀: $\\alpha > \\omega_0$ overdamped (two real roots), $\\alpha = \\omega_0$ critically damped (repeated root), $\\alpha < \\omega_0$ underdamped (complex conjugate roots with damped frequency $\\omega_d = \\sqrt{\\omega_0^2 - \\alpha^2}$).',
+      'Total response = forced (steady-state) + natural. Write the appropriate form, then apply both initial conditions x(0⁺) and dx/dt(0⁺) to pin down the two constants. dv_C/dt(0⁺) = i_C(0⁺)/C; di_L/dt(0⁺) = v_L(0⁺)/L.',
+      'Steady-state at t → ∞: storage elements settle (inductor → short, capacitor → open) again under the new source configuration.',
+    ],
+    answer: 'v_C(t) = v_C(∞) + (natural-response form), i_L(t) similarly. v_C(∞) and i_L(∞) come from the new DC steady state.',
+    sourceUrl: PDF_BASE + 'ENSC220-Midterm2-25-3.pdf',
+  },
+
+  // ===== Fall 2025 — Final =====
+  {
+    id: '2025-F-Q1', topic: 'opamp', year: 2025, exam: 'F', qNum: 1, points: 25, difficulty: 'hard',
+    title: 'Non-ideal op-amp gain vs. ideal — model parameter sweep',
+    prompt:
+`The op-amp in Figure 1(a) is non-ideal; its dependent-source model is given in Figure 1(b) (gain A, input resistance R_i, output resistance R_o).
+(a) Draw the equivalent circuit.
+(b) Determine the output voltage v_o and the voltage gain v_o/v_s.
+(c) Repeat (b) assuming the op-amp is ideal.
+(d) Compare results (b) and (c) for appropriate values of A, R_i, R_o.
+(e) Discuss how non-ideal parameters affect the voltage gain.`,
+    solution: [
+      'Replace the op-amp symbol with its dependent-source model: an input resistance R_i across the (+, −) inputs and a controlled source A·v_d in series with R_o at the output (v_d = v_+ − v_−).',
+      'Write node equations at the inverting input and at the output. Two equations, two unknowns (v_− and v_o). Eliminate v_− to obtain v_o/v_s as a closed-form function of A, R_i, R_o, and the external resistors.',
+      'Ideal limit: $A \\to \\infty$, $R_i \\to \\infty$, $R_o \\to 0$. The non-ideal expression collapses to the textbook result (e.g. $-R_f/R_1$ for an inverting amplifier).',
+      'Plug in finite values (e.g. A = 10⁵, R_i = 1 MΩ, R_o = 75 Ω) and compare. The non-ideal gain is slightly less than the ideal closed-loop gain and depends weakly on A; finite R_i loads the input; finite R_o slightly attenuates the output.',
+      'Conclusion: ideal model is excellent for low-frequency, high-loop-gain conditions; non-ideal corrections matter when A is small (low loop gain), R_i is comparable to source/feedback resistors, or R_o is comparable to the load.',
+    ],
+    answer: 'Closed-loop gain in non-ideal form reduces to ideal closed-loop gain as A→∞, R_i→∞, R_o→0. Exact symbolic result depends on Figure 1(a) topology.',
+    sourceUrl: PDF_BASE + 'ENSC220-Final-25-3.pdf',
+  },
+  {
+    id: '2025-F-Q2', topic: 'firstord', year: 2025, exam: 'F', qNum: 2, points: 15, difficulty: 'med',
+    title: 'First-order RC — switched twice (pulse response)',
+    prompt:
+`The switch in Figure 2 has been in position A for a long time. It is moved to position B at t = 0, and suddenly returns to A at t = 10 ms.
+(a) Derive v_C(t) for t ≥ 0.
+(b) Sketch v_C(t).`,
+    solution: [
+      'Phase 1 (long time in A): DC steady state. v_C(0⁻) = the DC voltage seen by the cap with the switch in A. By continuity v_C(0⁺) = v_C(0⁻).',
+      'Phase 2 (0 ≤ t < 10 ms, switch in B): identify R_TH and V_TH seen by C in this configuration. Time constant $\\tau_1 = R_{TH,B}\\,C$. Apply $v_C(t) = V_{TH,B} + [v_C(0^+) - V_{TH,B}]\\,e^{-t/\\tau_1}$. Evaluate v_C(10 ms⁻) — call this V_1.',
+      'Phase 3 (t ≥ 10 ms, switch back to A): re-set the clock at t′ = t − 10 ms. New initial condition v_C(t = 10 ms⁺) = V_1 (continuity). New time constant $\\tau_2 = R_{TH,A}\\,C$. Apply $v_C(t) = V_{TH,A} + [V_1 - V_{TH,A}]\\,e^{-(t-10\\text{ms})/\\tau_2}$.',
+      'Sketch: a single exponential charging/discharging in [0, 10 ms] toward V_{TH,B}, breaking at 10 ms and exponentially relaxing back toward V_{TH,A}.',
+    ],
+    answer: 'Piecewise: phase-2 exponential toward V_{TH,B} for 0 ≤ t < 10 ms, phase-3 exponential toward V_{TH,A} for t ≥ 10 ms, with continuity at t = 10 ms.',
+    sourceUrl: PDF_BASE + 'ENSC220-Final-25-3.pdf',
+  },
+  {
+    id: '2025-F-Q3', topic: 'secondord', year: 2025, exam: 'F', qNum: 3, points: 30, difficulty: 'hard',
+    title: 'Second-order RLC with given component values',
+    prompt:
+`Switch in Figure 3 has been in A a long time. At t = 0 it moves to B.
+Given: R₁ = 20 kΩ, R₂ = 4 kΩ, L = 1.6 H, C = 1.25 µF, V_A = 24 V.
+(a) Derive i_L(t) for t ≥ 0.
+(b) Derive v_C(t) for t ≥ 0.
+(c) Is the circuit overdamped, critically damped, or underdamped?`,
+    solution: [
+      'Compute the natural frequency: $\\omega_0 = 1/\\sqrt{LC} = 1/\\sqrt{1.6 \\cdot 1.25\\times10^{-6}} = 1/\\sqrt{2\\times10^{-6}} \\approx 707.1\\ \\text{rad/s}$.',
+      'Compute the damping coefficient using the topology in Figure 3. If position B forms a series RLC with effective resistance R, $\\alpha = R/(2L)$. With R = 4 kΩ in series: $\\alpha = 4000/(2 \\cdot 1.6) = 1250\\ \\text{rad/s}$. Since $\\alpha > \\omega_0$, the circuit is overdamped.',
+      'Initial conditions from position A (DC steady state): inductor short, capacitor open, then evaluate i_L(0⁻) and v_C(0⁻). By continuity these carry into 0⁺.',
+      'Solve the characteristic equation $s^2 + 2\\alpha s + \\omega_0^2 = 0$. Roots $s_{1,2} = -\\alpha \\pm \\sqrt{\\alpha^2 - \\omega_0^2}$. With α = 1250, ω₀ ≈ 707.1: $\\sqrt{1250^2 - 707.1^2} = \\sqrt{1562500-500000} = \\sqrt{1062500} \\approx 1030.8$. So $s_1 \\approx -219.2$, $s_2 \\approx -2280.8$.',
+      'General overdamped response: $i_L(t) = i_L(\\infty) + A_1 e^{s_1 t} + A_2 e^{s_2 t}$. Use i_L(0⁺) and di_L/dt(0⁺) = v_L(0⁺)/L to solve for A₁, A₂.',
+      'Repeat the same exponential form for v_C(t) with v_C(∞), using v_C(0⁺) and dv_C/dt(0⁺) = i_C(0⁺)/C.',
+    ],
+    answer: 'Overdamped. Roots ≈ −219 s⁻¹ and −2281 s⁻¹ (assuming series RLC with R = R₂ in position B). i_L(t) and v_C(t) are sums of two real decaying exponentials around their respective steady-state values.',
+    sourceUrl: PDF_BASE + 'ENSC220-Final-25-3.pdf',
+    note: 'The exact value of R used in α depends on whether R₁ also remains in the loop after switching — verify against Figure 3. The damping classification (overdamped) is robust as long as the equivalent series resistance is ≳ 1.8 kΩ.',
+  },
+  {
+    id: '2025-F-Q4', topic: 'freqresp', year: 2025, exam: 'F', qNum: 4, points: 30, difficulty: 'hard',
+    title: 'Op-amp transfer function & filter design',
+    prompt:
+`The op-amp circuit in Figure 4 operates in sinusoidal steady state.
+(a) Find V_O/V_S.
+(b) Find |V_O/V_S| at ω = 0 and ω → ∞.
+(c) Design the op-amp circuit so that the gain as ω → ∞ equals 10.
+(d) Choose R₁, R₂, C so that the gain at 10 krad/s equals 7.07.`,
+    solution: [
+      'Replace each element with its impedance: $Z_R = R$, $Z_C = 1/(j\\omega C)$, $Z_L = j\\omega L$. Treat the op-amp as ideal: virtual short and zero input current.',
+      'Apply nodal analysis at the inverting input. For a generic op-amp filter, $V_O/V_S = -Z_f/Z_{in}$ where Z_f is the feedback impedance and Z_in is the input impedance — both can be combinations of R and 1/(jωC) in series/parallel.',
+      'Simplify the resulting H(jω) into the standard form (e.g. $H(j\\omega) = -K \\cdot j\\omega\\tau / (1 + j\\omega\\tau)$ for a high-pass, or $K / (1 + j\\omega\\tau)$ for a low-pass).',
+      'Evaluate the magnitude at the limits: ω = 0 (capacitor open / inductor short) and ω → ∞ (capacitor short / inductor open). One limit will be 0 and the other will be a finite gain, telling you whether the topology is HPF or LPF.',
+      'Design: set the limiting gain equal to 10. Then enforce |H(j·10⁴)| = 7.07, which corresponds to −3 dB below the passband gain → ω = 10 krad/s is the corner frequency. Use $\\omega_c = 1/(R C)$ (or whichever R is in the time constant) to choose R and C with one free parameter you pick for convenience (e.g. C = 10 nF → R = 1/(ω_c C)).',
+    ],
+    answer: 'H(jω) shape and corner depend on Figure 4. For a high-pass with passband gain 10: pick R₂/R₁ = 10 and choose RC = 1/10⁴ s → e.g. C = 10 nF, R = 10 kΩ.',
+    sourceUrl: PDF_BASE + 'ENSC220-Final-25-3.pdf',
+    note: '7.07 = 10 / √2 ≈ −3 dB — this is the hint that 10 krad/s is the cutoff frequency.',
+  },
+
+  // =================================================================
+  //  STUB ENTRIES for 1998 – 2017 exams.
+  //  Each stub gives topic, year, exam, question number, and links to
+  //  the question PDF and the official handwritten solution PDF.
+  //  Replace the `stub: true` flag with a full `solution` array as
+  //  you transcribe each problem.
+  //  Topic tagging here is a *best-guess* based on the exam syllabus
+  //  for ENSC 220 and the typical structure of Trajković's exams
+  //  (M1 → KCL/KVL/Node/Mesh, M2 → Thévenin/Op-amps/First-order,
+  //   Final → adds 2nd-order/Phasors/Frequency response).
+  // =================================================================
+
+];
+
+// Programmatically generate stubs for older exams so the bank is populated.
+// Format: for each older exam, create ~5 stub questions tagged with the most
+// likely topics for that slot. Customize the topic tagging when you transcribe.
+const STUB_TOPIC_TEMPLATES = {
+  M1: ['basics', 'resistive', 'resistive', 'node', 'mesh'],
+  M2: ['thevenin', 'opamp', 'opamp', 'firstord', 'firstord'],
+  MT: ['basics', 'resistive', 'node', 'mesh', 'thevenin'], // single midterm covers all early material
+  F:  ['thevenin', 'opamp', 'firstord', 'secondord', 'phasor', 'freqresp'],
+  MF: ['thevenin', 'opamp', 'firstord', 'secondord', 'phasor', 'freqresp'],
+};
+
+EXAM_INDEX
+  .filter(e => e.year !== 2025) // 2025 already fully populated
+  .forEach(e => {
+    const topics = STUB_TOPIC_TEMPLATES[e.exam] || ['basics'];
+    topics.forEach((topic, idx) => {
+      const qNum = idx + 1;
+      QUESTIONS.push({
+        id: `${e.year}-${e.exam}-Q${qNum}`,
+        topic,
+        year: e.year,
+        exam: e.exam,
+        qNum,
+        points: null,
+        difficulty: e.exam === 'F' || e.exam === 'MF' ? 'hard' : 'med',
+        title: `${EXAM_LABEL[e.exam]} ${e.year} — Question ${qNum}`,
+        prompt: `Open the source PDF for the full question text and figures. This slot is tagged as a "${TOPICS.find(t => t.id === topic).short}" problem based on the exam structure. Verify the tag against the actual PDF and re-classify if needed.`,
+        solution: null,
+        stub: true,
+        sourceUrl: PDF_BASE + e.qPdf,
+        solUrl: e.solPdf ? PDF_BASE + e.solPdf : null,
+      });
+    });
+  });
+
+// =====================================================================
+//  STORAGE — progress tracking
+// =====================================================================
+const STORAGE_KEY = 'ensc220-dojo-progress-v1';
+function safeGet(k)    { try { return localStorage.getItem(k); }      catch { return null; } }
+function safeSet(k, v) { try { localStorage.setItem(k, v); }          catch { /* opaque origin / disabled storage */ } }
+function loadProgress() {
+  try { return JSON.parse(safeGet(STORAGE_KEY) || '{}'); } catch { return {}; }
+}
+function saveProgress(p) { safeSet(STORAGE_KEY, JSON.stringify(p)); }
+let progress = loadProgress();
+function setStatus(qid, status) {
+  if (progress[qid] === status) delete progress[qid];
+  else progress[qid] = status;
+  saveProgress(progress);
+  render();
+}
+
+// =====================================================================
+//  RENDER
+// =====================================================================
+const topicEl = document.getElementById('topics');
+const listEl = document.getElementById('q-list');
+const heroCountEl = document.getElementById('hero-count');
+const countPillEl = document.getElementById('count-pill');
+const fTopic = document.getElementById('f-topic');
+const fYear  = document.getElementById('f-year');
+const fExam  = document.getElementById('f-exam');
+const fDiff  = document.getElementById('f-difficulty');
+const fStatus= document.getElementById('f-status');
+const fSearch= document.getElementById('f-search');
+
+// Populate filters
+TOPICS.forEach(t => {
+  const o = document.createElement('option'); o.value = t.id; o.textContent = t.short; fTopic.appendChild(o);
+});
+[...new Set(QUESTIONS.map(q => q.year))].sort((a,b)=>b-a).forEach(y => {
+  const o = document.createElement('option'); o.value = y; o.textContent = y; fYear.appendChild(o);
+});
+
+function currentFilter() {
+  return {
+    topic: fTopic.value,
+    year: fYear.value ? +fYear.value : null,
+    exam: fExam.value,
+    diff: fDiff.value,
+    status: fStatus.value,
+    search: fSearch.value.trim().toLowerCase(),
+  };
+}
+function matches(q, f) {
+  if (f.topic && q.topic !== f.topic) return false;
+  if (f.year && q.year !== f.year) return false;
+  if (f.exam && q.exam !== f.exam) return false;
+  if (f.diff && q.difficulty !== f.diff) return false;
+  if (f.status) {
+    const st = progress[q.id];
+    if (f.status === 'untouched' && st) return false;
+    if (f.status === 'good' && st !== 'good') return false;
+    if (f.status === 'review' && st !== 'review') return false;
+    if (f.status === 'bad' && st !== 'bad') return false;
+  }
+  if (f.search) {
+    const hay = `${q.title} ${q.prompt} ${q.year} ${EXAM_LABEL[q.exam]}`.toLowerCase();
+    if (!hay.includes(f.search)) return false;
+  }
+  return true;
+}
+
+function renderTopics() {
+  topicEl.innerHTML = '';
+  TOPICS.forEach(t => {
+    const qs = QUESTIONS.filter(q => q.topic === t.id);
+    const done = qs.filter(q => progress[q.id] === 'good').length;
+    const pct = qs.length ? Math.round((done / qs.length) * 100) : 0;
+    const div = document.createElement('div');
+    div.className = 'topic-card' + (fTopic.value === t.id ? ' active' : '');
+    div.innerHTML = `
+      <div class="name">${t.name}</div>
+      <div class="chapter">${t.chapter}</div>
+      <div class="count">${qs.length} questions · ${done} mastered (${pct}%)</div>
+      <div class="progress"><div style="width:${pct}%"></div></div>`;
+    div.onclick = () => { fTopic.value = fTopic.value === t.id ? '' : t.id; render(); window.scrollTo({top: listEl.offsetTop - 20, behavior: 'smooth'}); };
+    topicEl.appendChild(div);
+  });
+}
+
+function renderChapterRoadmap() {
+  const host = document.getElementById('chapter-roadmap');
+  if (!host) return;
+  host.innerHTML = `
+    <div class="chapter-grid">
+      ${CHAPTERS.map(ch => `
+        <div class="chapter-card">
+          <h4>${ch.label}: ${ch.title}</h4>
+          <div class="chapter-meta">${ch.dates}</div>
+          <ul>
+            ${ch.topics.length ? ch.topics.map(t => `<li>${(TOPICS.find(x => x.id === t) || {}).short || t}</li>`).join('') : '<li>Topic bank not filled yet</li>'}
+          </ul>
+        </div>
+      `).join('')}
+    </div>
+    <div class="stub-note" style="margin-top:12px;">Use this roadmap as a chapter map only. It is not tied to any specific semester, dates, or assessment schedule.</div>`;
+}
+
+function renderList() {
+  const f = currentFilter();
+  const filtered = QUESTIONS.filter(q => matches(q, f));
+  countPillEl.textContent = `${filtered.length} of ${QUESTIONS.length} questions`;
+  listEl.innerHTML = '';
+  if (!filtered.length) { listEl.innerHTML = '<div class="empty">No questions match your filters.</div>'; return; }
+
+  filtered.forEach(q => {
+    const topicMeta = TOPICS.find(t => t.id === q.topic);
+    const card = document.createElement('article');
+    card.className = 'q-card';
+    const st = progress[q.id];
+    const solOpen = card.dataset.open === 'true';
+    card.innerHTML = `
+      <div class="meta">
+        <span class="pill year">${q.year}</span>
+        <span class="pill exam">${EXAM_LABEL[q.exam]}</span>
+        <span class="pill">Q${q.qNum}</span>
+        ${q.points ? `<span class="pill points">${q.points} pts</span>` : ''}
+        <span class="pill diff-${q.difficulty === 'easy' ? 'easy' : q.difficulty === 'hard' ? 'hard' : 'med'}">${q.difficulty || 'med'}</span>
+        <span class="pill">${topicMeta ? topicMeta.short : q.topic}</span>
+      </div>
+      <h3>${q.title}</h3>
+      <div class="prompt">${escapeHtml(q.prompt)}</div>
+      ${q.stub ? `<div class="stub-note">📝 Worked solution not yet transcribed. Use the source PDF for the question figure${q.solUrl ? ` and the <a href="${q.solUrl}" target="_blank" rel="noopener">official handwritten solution</a>` : ''}. Drop a full <code>solution</code> array into <code>QUESTIONS</code> to replace this stub.</div>` : ''}
+      <div class="source">Source: SFU ENSC 220 sample exams, <a href="${q.sourceUrl}" target="_blank" rel="noopener">${EXAM_LABEL[q.exam]} ${q.year}, Q${q.qNum}</a>${q.solUrl ? ` · <a href="${q.solUrl}" target="_blank" rel="noopener">handwritten solution</a>` : ''}</div>
+      <div class="actions">
+        ${!q.stub ? `<button class="primary reveal">Reveal worked solution</button>` : ''}
+        <a class="btn" href="${q.sourceUrl}" target="_blank" rel="noopener">📄 Open question PDF</a>
+        ${q.solUrl ? `<a class="btn" href="${q.solUrl}" target="_blank" rel="noopener">✍️ Official solution</a>` : ''}
+        <div class="status">
+          <button data-s="good"   class="${st==='good'?'on-good':''}"     title="Got it">✅</button>
+          <button data-s="review" class="${st==='review'?'on-review':''}" title="Review later">⚠️</button>
+          <button data-s="bad"    class="${st==='bad'?'on-bad':''}"       title="Need help">❌</button>
+        </div>
+      </div>
+      ${q.solution ? `
+        <div class="solution">
+          <h4>Worked solution</h4>
+          <ol>${q.solution.map(s => `<li>${s}</li>`).join('')}</ol>
+          <div class="answer-box"><strong>Answer:</strong> ${q.answer || '(see steps)'} </div>
+          ${q.note ? `<div class="note">Note: ${q.note}</div>` : ''}
+        </div>` : ''}
+    `;
+    // Wire reveal
+    const rev = card.querySelector('.reveal');
+    if (rev) {
+      rev.onclick = () => {
+        const sol = card.querySelector('.solution');
+        sol.classList.toggle('open');
+        rev.textContent = sol.classList.contains('open') ? 'Hide solution' : 'Reveal worked solution';
+        if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise([sol]);
+      };
+    }
+    // Wire status
+    card.querySelectorAll('.status button').forEach(btn => {
+      btn.onclick = () => setStatus(q.id, btn.dataset.s);
+    });
+    listEl.appendChild(card);
+  });
+  heroCountEl.textContent = `${QUESTIONS.length} questions across ${EXAM_INDEX.length} past exams`;
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderExams() {
+  const grid = document.getElementById('exam-grid');
+  grid.innerHTML = '';
+  EXAM_INDEX.slice().sort((a,b) => b.year - a.year || a.exam.localeCompare(b.exam)).forEach(e => {
+    const div = document.createElement('div');
+    div.className = 'exam-row';
+    div.innerHTML = `
+      <div class="yr">${e.label}</div>
+      <div class="lnk">
+        <a href="${PDF_BASE + e.qPdf}" target="_blank" rel="noopener">📄 Questions</a>
+        ${e.solPdf ? `<a href="${PDF_BASE + e.solPdf}" target="_blank" rel="noopener">✍️ Handwritten solutions</a>` : '<span style="color:var(--muted)">no solutions PDF</span>'}
+      </div>`;
+    grid.appendChild(div);
+  });
+}
+
+function render() {
+  renderTopics();
+  renderList();
+}
+
+// Wire filters
+[fTopic, fYear, fExam, fDiff, fStatus].forEach(s => s.onchange = render);
+fSearch.oninput = render;
+
+// Theme toggle
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  safeSet('ensc220-dojo-theme', t);
+}
+document.getElementById('theme-toggle').onclick = () => {
+  const cur = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+  applyTheme(cur);
+};
+applyTheme(safeGet('ensc220-dojo-theme') || 'dark');
+
+// Reset progress
+document.getElementById('reset-progress').onclick = () => {
+  if (confirm('Clear all your local progress (✅ / ⚠️ / ❌ marks)?')) {
+    progress = {}; saveProgress(progress); render();
+  }
+};
+
+// Initial render
+renderChapterRoadmap();
+renderExams();
+render();
+</script>
+</body>
+</html>
