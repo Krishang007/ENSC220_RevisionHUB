@@ -606,10 +606,8 @@ Given: R₁ = 20 kΩ, R₂ = 4 kΩ, L = 1.6 H, C = 1.25 µF, V_A = 24 V.
   //  the question PDF and the official handwritten solution PDF.
   //  Replace the `stub: true` flag with a full `solution` array as
   //  you transcribe each problem.
-  //  Topic tagging here is a *best-guess* based on the exam syllabus
-  //  for ENSC 220 and the typical structure of Trajković's exams
-  //  (M1 → KCL/KVL/Node/Mesh, M2 → Thévenin/Op-amps/First-order,
-  //   Final → adds 2nd-order/Phasors/Frequency response).
+  //  Topic tagging here is a *best-guess* and should be verified against
+  //  the actual PDF before treating it as final.
   // =================================================================
 
 ];
@@ -625,10 +623,14 @@ const STUB_TOPIC_TEMPLATES = {
   MF: ['thevenin', 'opamp', 'firstord', 'secondord', 'phasor', 'freqresp'],
 };
 
+const STUB_TOPIC_OVERRIDES = {
+  '2017-M1': ['basics', 'resistive', 'node', 'mesh'],
+};
+
 EXAM_INDEX
   .filter(e => e.year !== 2025) // 2025 already fully populated
   .forEach(e => {
-    const topics = STUB_TOPIC_TEMPLATES[e.exam] || ['basics'];
+    const topics = STUB_TOPIC_OVERRIDES[`${e.year}-${e.exam}`] || STUB_TOPIC_TEMPLATES[e.exam] || ['basics'];
     topics.forEach((topic, idx) => {
       const qNum = idx + 1;
       QUESTIONS.push({
@@ -640,7 +642,7 @@ EXAM_INDEX
         points: null,
         difficulty: e.exam === 'F' || e.exam === 'MF' ? 'hard' : 'med',
         title: `${EXAM_LABEL[e.exam]} ${e.year} — Question ${qNum}`,
-        prompt: `Open the source PDF for the full question text and figures. This slot is tagged as a "${TOPICS.find(t => t.id === topic).short}" problem based on the exam structure. Verify the tag against the actual PDF and re-classify if needed.`,
+        prompt: `Open the source PDF for the full question text and figures. This slot is tagged as a provisional "${TOPICS.find(t => t.id === topic).short}" topic. Verify the tag against the actual PDF and re-classify if needed.`,
         solution: null,
         stub: true,
         sourceUrl: PDF_BASE + e.qPdf,
